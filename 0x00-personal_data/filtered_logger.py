@@ -86,3 +86,7 @@ def main():
         logger.info(message.strip())
     cursor.close()
     db.close()
+
+
+if __name__ == "__main__":
+    main()
