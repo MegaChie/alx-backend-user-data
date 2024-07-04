@@ -76,3 +76,13 @@ def main():
     Connects to database and retrieves form "users" table on it
     and then displays redacted results.
     """
+    db = get_db()
+    logger = get_logger()
+    curs = db.cursor()
+    curs.execute("SELECT * FROM users;")
+    fields = curs.column_names
+    for line in curs:
+        message = "".join("{}={}; ".format(k, v) for k, v in zip(fields, line))
+        logger.info(message.strip())
+    cursor.close()
+    db.close()
