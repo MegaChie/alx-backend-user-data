@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 """Rdacts personal informations"""
 import logging
+import mysql.connector
+import os
 import re
 from typing import List
 
 
-PII_FIELDS = ('name', 'email', 'phone', 'ssn', 'password')
+PII_FIELDS = ("name", "email", "phone", "ssn", "password")
 
 
 def filter_datum(fields: List[str], redaction: str,
@@ -56,3 +58,13 @@ def get_logger() -> logging.Logger:
     handler.setFormatter(formatter)
     logger.addHandler(handler)
     return logger
+
+def get_db() -> mysql.connector.connection.MySQLConnection:
+    """Returns a connector to the database"""
+    user = os.getenv("PERSONAL_DATA_DB_USERNAME") or "root"
+    paswrd = os.getenv("PERSONAL_DATA_DB_PASSWORD") or ""
+    host = os.getenv("PERSONAL_DATA_DB_HOST") or "localhost"
+    db = os.getenv("PERSONAL_DATA_DB_NAME")
+    conn = mysql.connector.connect(user=user, password=paswrd,
+                                   host=host, database=db)
+    return conn
