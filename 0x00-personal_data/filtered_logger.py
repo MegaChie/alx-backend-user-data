@@ -69,3 +69,10 @@ def get_db() -> mysql.connector.connection.MySQLConnection:
     conn = mysql.connector.connect(user=user, password=paswrd,
                                    host=host, database=db, port=3306)
     return conn
+
+
+def main():
+    """
+    Connects to database and retrieves form "users" table on it
+    and then displays redacted results.
+    """
