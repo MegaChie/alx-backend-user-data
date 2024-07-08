@@ -2,16 +2,21 @@
 """
 Route module for the API
 """
-from os import getenv
+from api.v1.auth.auth import Auth
 from api.v1.views import app_views
 from flask import Flask, jsonify, abort, request
 from flask_cors import (CORS, cross_origin)
 import os
+from os import getenv
 
 
 app = Flask(__name__)
 app.register_blueprint(app_views)
 CORS(app, resources={r"/api/v1/*": {"origins": "*"}})
+auth = None
+Auth_Type = os.getenv("AUTH_TYPE")
+if Auth_Type:
+    auth = Auth()
 
 
 @app.errorhandler(404)
@@ -31,6 +36,25 @@ def acess_Denied(error) -> str:
 def resource_Denied(error) -> str:
     """Handels authorized user with no enough prevelages for resource"""
     return jsonify({"error": "Forbidden"}), 403
+
+
+@app.before_request
+def path_check() -> str:
+    """Checks the paths the user is accessing"""
+    if not auth:
+        return
+    excluded_paths = [
+                      '/api/v1/status/',
+                      '/api/v1/unauthorized/',
+                      '/api/v1/forbidden/'
+                      ]
+    if auth.require_auth(request.path, excluded_paths):
+        header = auth.authorization_header(request)
+        user = auth.current_user(request)
+        if not header:
+            abort(401)
+        if not user:
+            abort(403)
 
 
 if __name__ == "__main__":

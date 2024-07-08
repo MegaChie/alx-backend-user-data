@@ -19,7 +19,10 @@ class Auth():
 
     def authorization_header(self, request=None) -> Union[str, str]:
         """Returns the value of the header request (Authorization)"""
-        return None
+        if not request:
+            return None
+        auth_Header = request.headers.get("Authorization")
+        return auth_Header
 
     def current_user(self, request=None) -> TypeVar('User'):
         """Returns the user of session"""
