@@ -27,6 +27,14 @@ def stats() -> str:
 
 
 @app_views.route("/unauthorized/", strict_slashes=False)
-def unauthorized_acess() -> str:
+def unauthorized_Access() -> str:
     """Trigers the 401 unauthorized error"""
     abort(401)
+
+
+@app_views.route("/forbidden/", strict_slashes=False)
+def resource_Inaccesseble() -> str:
+    """
+    Trigeres the 403 authorized but no resource access allowed
+    """
+    abort(403)
