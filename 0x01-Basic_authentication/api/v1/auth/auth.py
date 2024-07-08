@@ -8,7 +8,14 @@ class Auth():
     """Manage the API authentication"""
     def require_auth(self, path: str, excluded_paths: List[str]) -> bool:
         """Returns a boolen Stating if authentication is needed or not"""
-        return False
+        if not excluded_paths or len(excluded_paths) == 0:
+            return True
+        if not path:
+            return True
+        for allowed in excluded_paths:
+            if path in allowed:
+                return False
+        return True
 
     def authorization_header(self, request=None) -> Union[str, str]:
         """Returns the value of the header request (Authorization)"""
