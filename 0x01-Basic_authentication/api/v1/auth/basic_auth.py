@@ -3,6 +3,7 @@
 from api.v1.auth.auth import Auth
 from models.user import User
 import base64
+import re
 from typing import TypeVar
 
 
@@ -54,9 +55,14 @@ class BasicAuth(Auth):
             return (None, None)
         if not isinstance(decoded_base64_authorization_header, str):
             return (None, None)
-        if ":" in decoded_base64_authorization_header:
-            headers = decoded_base64_authorization_header.split(":")
-            return (headers[0], headers[1])
+        pattern = r'(?P<user>[^:]+):(?P<password>.+)'
+        field_match = re.fullmatch(pattern,
+                                   decoded_base64_authorization_header.strip(),
+                                   )
+        if field_match:
+            user = field_match.group('user')
+            password = field_match.group('password')
+            return user, password
         return (None, None)
 
     def user_object_from_credentials(self, user_email: str,
