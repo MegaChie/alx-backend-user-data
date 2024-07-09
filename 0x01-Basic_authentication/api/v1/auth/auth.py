@@ -13,8 +13,9 @@ class Auth():
         if not path:
             return True
         for allowed in excluded_paths:
-            if path in allowed:
-                return False
+            if allowed.endswith('*'):
+                if path.startswith(allowed[:-1]):
+                    return False
         return True
 
     def authorization_header(self, request=None) -> Union[str, str]:
