@@ -14,15 +14,15 @@ class Auth():
         if not path:
             return True
         for allowed in map(lambda x: x.strip(), excluded_paths):
-                pattern = ''
-                if allowed[-1] == '*':
-                    pattern = '{}.*'.format(allowed[0:-1])
-                elif allowed[-1] == '/':
-                    pattern = '{}/*'.format(allowed[0:-1])
-                else:
-                    pattern = '{}/*'.format(allowed)
-                if re.match(pattern, path):
-                    return False
+            pattern = ''
+            if allowed[-1] == '*':
+                pattern = '{}.*'.format(allowed[0:-1])
+            elif allowed[-1] == '/':
+                pattern = '{}/*'.format(allowed[0:-1])
+            else:
+                pattern = '{}/*'.format(allowed)
+            if re.match(pattern, path):
+                return False
         return True
 
     def authorization_header(self, request=None) -> Union[str, str]:
