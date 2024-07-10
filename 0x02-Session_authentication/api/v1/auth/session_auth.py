@@ -1,7 +1,20 @@
 #!/usr/bin/env python3
-"""Session authentication for the web app"""
+"""0x02. Session authentication"""
 from api.v1.auth.auth import Auth
+from models.user import User
+from uuid import uuid4
 
 
 class SessionAuth(Auth):
-    pass
+    """Taskes care of the session authentication for the app"""
+    user_id_by_session_id = {}
+
+    def create_session(self, user_id: str = None) -> str:
+        """Resturns session ID of ussers"""
+        if not user_id:
+            return None
+        if not isinstance(user_id, str):
+            return None
+        session_ID = str(uuid4())
+        self.user_id_by_session_id[session_ID] = user_id
+        return session_ID
