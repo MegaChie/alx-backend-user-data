@@ -50,18 +50,20 @@ def path_check() -> str:
     if not auth:
         return
     excluded_paths = [
-                      '/api/v1/status/',
-                      '/api/v1/unauthorized/',
-                      '/api/v1/forbidden/'
+                      "/api/v1/status/",
+                      "/api/v1/unauthorized/",
+                      "/api/v1/forbidden/",
+                      "/api/v1/auth_session/login/"
                       ]
     if auth.require_auth(request.path, excluded_paths):
         header = auth.authorization_header(request)
+        cookie = auth.session_cookie(request)
         user = auth.current_user(request)
-        if not header:
+        if not header and not cookie:
             abort(401)
         if not user:
             abort(403)
-        request.current_user = user
+    request.current_user = auth.current_user(request)
 
 
 if __name__ == "__main__":
