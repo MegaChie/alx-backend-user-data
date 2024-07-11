@@ -6,7 +6,7 @@ from api.v1.views import app_views
 from models.user import User
 
 
-@app_views.route('/auth_session/login', methods=['POST'],
+@app_views.route("/auth_session/login", methods=["POST"],
                  strict_slashes=False)
 def login() -> str:
     """Seddion login for the app"""
@@ -30,7 +30,7 @@ def login() -> str:
     return response
 
 
-@app_views.route('/auth_session/logout', methods=['DELETE'],
+@app_views.route("/auth_session/logout", methods=["DELETE"],
                  strict_slashes=False)
 def logout() -> str:
     """Session logout for the app"""
