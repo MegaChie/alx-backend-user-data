@@ -30,10 +30,14 @@ class DB:
 
     def add_user(self, email: str, hashed_password: str) -> User:
         """Creates a user in the database and returns it as an object"""
-        new_User = User(email=email, hashed_password=hashed_password)
-        self._session.add(new_User)
-        self._session.commit()
-        return new_User
+        try:
+            new_user = User(email=email, hashed_password=hashed_password)
+            self._session.add(new_user)
+            self._session.commit()
+        except Exception:
+            self._session.rollback()
+            new_user = None
+        return new_user
 
     def find_user_by(self, **kwargs) -> User:
         """Search for a user in database and returns it if found"""
