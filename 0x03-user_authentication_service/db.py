@@ -45,7 +45,7 @@ class DB:
             raise
         return found
 
-    def update_user(self, user_id: int, **kwargs) -> None: 
+    def update_user(self, user_id: int, **kwargs) -> None:
         """Updates the user with the given ID"""
         found_User = self.find_user_by(id=user_id)
         if not found_User:
