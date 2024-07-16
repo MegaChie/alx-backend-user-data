@@ -3,10 +3,10 @@
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 
-base = declarative_base()
+Base = declarative_base()
 
 
-class User(base):
+class User(Base):
     """Creates a SQLAlchemy model for a database table named users"""
     __tablename__ = "users"
     id = Column(Integer, primary_key=True, autoincrement=True)
