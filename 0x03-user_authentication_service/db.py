@@ -30,14 +30,10 @@ class DB:
 
     def add_user(self, email: str, hashed_password: str) -> User:
         """Creates a user in the database and returns it as an object"""
-        try:
-            new_user = User(email=email, hashed_password=hashed_password)
-            self._session.add(new_user)
-            self._session.commit()
-        except Exception:
-            self._session.rollback()
-            new_user = None
-        return new_user
+        new_User = User(email=email, hashed_password=hashed_password)
+        self._session.add(new_User)
+        self._session.commit()
+        return new_User
 
     def find_user_by(self, **kwargs) -> User:
         """Search for a user in database and returns it if found"""
@@ -48,3 +44,15 @@ class DB:
         except InvalidRequestError:
             raise
         return found
+
+    def update_user(self, user_id: int, **kwargs) -> None: 
+        """Updates the user with the given ID"""
+        found_User = self.find_user_by(id=user_id)
+        if not found_User:
+            return
+        for key in kwargs:
+            if hasattr(found_User, key):
+                setattr(found_User, key, kwargs[key])
+            else:
+                raise ValueError
+        self._session.commit()
