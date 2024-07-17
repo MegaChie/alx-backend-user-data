@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Flask app for the routes"""
-from flask import abort, Flask, jsonify, request
+from flask import abort, Flask, jsonify, redirect, request
 from auth import Auth
 
 app = Flask(__name__)
@@ -38,6 +38,21 @@ def login() -> str:
     responce = jsonify({"email": email, "message": "logged in"})
     responce.set_cookie("session_id", ID)
     return responce
+
+
+@app.route("/sessions", methods=["DELETE"], strict_slashes=False)
+def logout() -> str:
+    """Logs out a user from the app"""
+    ID = request.cookies.get("session_id")
+    if not ID:
+        abort(403)
+    user = AUTH.get_user_from_session_id(ID)
+    if not user:
+        abort(403)
+    AUTH.destroy_session(user.id)
+    response = jsonify({"message": "logout successful, session distroyed"})
+    response.delete_cookie("session_id")
+    return redirect("/", code=302)
 
 
 if __name__ == "__main__":
