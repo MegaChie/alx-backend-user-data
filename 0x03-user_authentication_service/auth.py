@@ -2,6 +2,7 @@
 """Authentication for the app"""
 import bcrypt
 from db import DB
+from sqlalchemy.exc import InvalidRequestError
 from sqlalchemy.orm.exc import NoResultFound
 import uuid
 from user import User
@@ -14,6 +15,7 @@ def _hash_password(password: str) -> bytes:
     salting = bcrypt.gensalt()
     hashed_paswrd = bcrypt.hashpw(password.encode('utf-8'), salting)
     return hashed_paswrd
+
 
 def _generate_uuid() -> str:
     """Returns the session ID"""
@@ -45,3 +47,13 @@ class Auth:
         paswrd = user.hashed_password
         check_Paswrd = password.encode("utf-8")
         return bcrypt.checkpw(check_Paswrd, paswrd)
+
+    def create_session(self, email: str) -> str:
+        """Returns the session ID saved to the user in the database"""
+        try:
+            user = self._db.find_user_by(email=email)
+        except (NoResultFound, InvalidRequestError):
+            return None
+        ID = _generate_uuid()
+        self._db.update_user(user.id, session_id=ID)
+        return ID
