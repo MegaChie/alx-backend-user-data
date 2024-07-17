@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Flask app for the routes"""
-from flask import Flask, jsonify, request
+from flask import abort, Flask, jsonify, request
 from auth import Auth
 
 app = Flask(__name__)
@@ -23,6 +23,21 @@ def users() -> str:
         return jsonify({"email": email, "message": "user created"}), 200
     except Exception:
         return jsonify({"message": "email already registered"}), 400
+    
+
+@app.route("/sessions", methods=["POST"], strict_slashes=False)
+def lgin() -> str:
+    """Impliment session login"""
+    email = request.form.get("email")
+    paswrd = request.form.get("password")
+    if not email or not paswrd:
+        abort(401)
+    if not AUTH.valid_login(email, paswrd):
+        abort(401)
+    ID = AUTH.create_session(email)
+    responce = jsonify({"email": email, "message": "logged in"})
+    responce.set_cookie("session_id", ID)
+    return responce
 
 
 if __name__ == "__main__":
