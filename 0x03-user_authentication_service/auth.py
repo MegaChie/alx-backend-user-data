@@ -58,3 +58,13 @@ class Auth:
         ID = _generate_uuid()
         self._db.update_user(user.id, session_id=ID)
         return ID
+
+    def get_user_from_session_id(self, session_id: str) -> User:
+        """Returns the user with corresponding session ID"""
+        if not session_id:
+            return None
+        try:
+            found = self._db.find_user_by(session_id=session_id)
+        except NoResultFound:
+            return None
+        return found

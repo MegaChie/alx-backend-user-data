@@ -23,10 +23,10 @@ def users() -> str:
         return jsonify({"email": email, "message": "user created"}), 200
     except Exception:
         return jsonify({"message": "email already registered"}), 400
-    
+
 
 @app.route("/sessions", methods=["POST"], strict_slashes=False)
-def lgin() -> str:
+def login() -> str:
     """Impliment session login"""
     email = request.form.get("email")
     paswrd = request.form.get("password")
