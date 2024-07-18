@@ -76,9 +76,8 @@ class Auth:
 
     def get_reset_password_token(self, email: str) -> str:
         """Generates a reset token for the user and returns it"""
-        try:
-            found = self._db.find_user_by(email=email)
-        except (NoResultFound, InvalidRequestError):
+        found = self._db.find_user_by(email=email)
+        if not found:
             raise ValueError
         token = _generate_uuid()
         self._db.update_user(user.id, reset_token=token)
@@ -86,9 +85,8 @@ class Auth:
 
     def update_password(self, reset_token: str, password: str) -> None:
         """Updates the password of a user based on the reset token"""
-        try:
-            found = self._db.find_user_by(reset_token=reset_token)
-        except (NoResultFound, InvalidRequestError):
+        found = self._db.find_user_by(reset_token=reset_token)
+        if not found:
             raise ValueError
         new_Paswrd = _hash_password(password)
         self._db.update_user(user.id, hashed_password=new_Paswrd,
