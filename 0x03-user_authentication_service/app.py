@@ -52,7 +52,7 @@ def logout() -> str:
     AUTH.destroy_session(user.id)
     response = jsonify({"message": "logout successful, session distroyed"})
     response.delete_cookie("session_id")
-    return redirect("/", code=302)
+    return redirect("/")
 
 
 @app.route("/profile", methods=["GET"], strict_slashes=False)
