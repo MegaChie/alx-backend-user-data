@@ -1,4 +1,10 @@
 #!/usr/bin/env python3
+"""
+Test module for the authentication
+
+- Keep in mid that it is not complete.
+  The third and last test cases are unpredictable.
+"""
 import requests as req
 
 base = "http://127.0.0.1:5000"
