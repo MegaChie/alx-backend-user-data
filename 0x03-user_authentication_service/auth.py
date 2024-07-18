@@ -33,7 +33,7 @@ class Auth:
         """Hashes the password of the new user"""
         try:
             user = self._db.find_user_by(email=email)
-        except NoResultFound:
+        except (NoResultFound, InvalidRequestError):
             hased_Pasword = _hash_password(password)
             new_User = self._db.add_user(email, hased_Pasword)
             return new_User
@@ -43,7 +43,7 @@ class Auth:
         """Returns True is user is logged in, False is not"""
         try:
             user = self._db.find_user_by(email=email)
-        except NoResultFound:
+        except (NoResultFound, InvalidRequestError):
             return False
         paswrd = user.hashed_password
         check_Paswrd = password.encode("utf-8")
@@ -76,10 +76,9 @@ class Auth:
 
     def get_reset_password_token(self, email: str) -> str:
         """Generates a reset token for the user and returns it"""
-        if not email:
-            raise ValueError
-        found = self._db.find_user_by(email=email)
-        if not found:
+        try:
+            found = self._db.find_user_by(email=email)
+        except (NoResultFound, InvalidRequestError):
             raise ValueError
         token = _generate_uuid()
         self._db.update_user(user.id, reset_token=token)
@@ -87,10 +86,9 @@ class Auth:
 
     def update_password(self, reset_token: str, password: str) -> None:
         """Updates the password of a user based on the reset token"""
-        if not reset_token:
-            raise ValueError
-        found = self._db.find_user_by(reset_token=reset_token)
-        if not found:
+        try:
+            found = self._db.find_user_by(reset_token=reset_token)
+        except (NoResultFound, InvalidRequestError):
             raise ValueError
         new_Paswrd = _hash_password(password)
         self._db.update_user(user.id, hashed_password=new_Paswrd,
